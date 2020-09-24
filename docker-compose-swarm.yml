@@ -1,0 +1,39 @@
+version: '3.3'
+
+services:
+  app:
+    build: ./app
+    image: harbor01.cssnr.com/shane/blue-team-docker:${VERSION}
+    env_file: ${ENV_FILE}
+    command: "gunicorn twitch_site.wsgi:application --workers 2 -b 0.0.0.0:9000"
+    deploy:
+      mode: global
+    volumes:
+      - data_dir:/data
+
+  nginx:
+    build: ./nginx
+    image: harbor01.cssnr.com/shane/blue-team-docker:${VERSION}
+    env_file: ${ENV_FILE}
+    deploy:
+      mode: global
+    volumes:
+      - data_dir:/data
+    depends_on:
+      - app
+    secrets:
+      - source: cssnr.com.crt
+        target: /etc/ssl/cssnr.com.crt
+      - source: cssnr.com.key
+        target: /etc/ssl/cssnr.com.key
+    ports:
+      - "${DOCKER_PORT}:443"
+
+secrets:
+  cssnr.com.crt:
+    external: true
+  cssnr.com.key:
+    external: true
+
+volumes:
+  data_dir:
