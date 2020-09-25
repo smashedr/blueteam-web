@@ -18,13 +18,13 @@ def do_oauth(request):
     """
     request.session['login_redirect_url'] = get_next_url(request)
     params = {
-        'client_id': settings.TWITCH_CLIENT_ID,
-        'redirect_uri': settings.TWITCH_REDIRECT_URI,
+        'client_id': settings.DISCORD_CLIENT_ID,
+        'redirect_uri': settings.DISCORD_REDIRECT_URI,
         'response_type': 'code',
-        'scope': settings.TWITCH_SCOPE,
+        'scope': settings.DISCORD_SCOPE,
     }
     url_params = urllib.parse.urlencode(params)
-    url = 'https://id.twitch.tv/oauth2/authorize?{}'.format(url_params)
+    url = 'https://discord.com/api/oauth2/authorize?{}'.format(url_params)
     return HttpResponseRedirect(url)
 
 
@@ -35,12 +35,12 @@ def callback(request):
     try:
         oauth_code = request.GET['code']
         logger.debug('oauth_code: {}'.format(oauth_code))
-        access_token = twitch_token(oauth_code)
+        access_token = get_access_token(oauth_code)
         logger.debug('access_token: {}'.format(access_token))
-        twitch_profile = get_twitch(access_token)
-        logger.debug('twitch_profile: {}'.format(twitch_profile))
-        logger.debug(twitch_profile)
-        auth = login_user(request, twitch_profile)
+        user_profile = get_user_profile(access_token)
+        logger.debug('user_profile: {}'.format(user_profile))
+        logger.debug(user_profile)
+        auth = login_user(request, user_profile)
         if not auth:
             err_msg = 'Unable to complete login process. Report as a Bug.'
             return HttpResponse(err_msg, content_type='text/plain')
@@ -67,19 +67,19 @@ def log_out(request):
     return redirect(next_url)
 
 
-def login_user(request, data):
+def login_user(request, user_profile):
     """
     Login or Create New User
     """
     try:
-        user = User.objects.filter(username=data['username']).get()
-        user = update_profile(user, data)
+        user = User.objects.filter(username=user_profile['django_username']).get()
+        user = update_profile(user, user_profile)
         user.save()
         login(request, user)
         return True
     except ObjectDoesNotExist:
-        user = User.objects.create_user(data['username'], data['email'])
-        user = update_profile(user, data)
+        user = User.objects.create_user(user_profile['django_username'])
+        user = update_profile(user, user_profile)
         user.save()
         login(request, user)
         return True
@@ -88,57 +88,54 @@ def login_user(request, data):
         return False
 
 
-def twitch_token(code):
+def get_access_token(code):
     """
-    Post OAuth code to Twitch and Return access_token
+    Post OAuth code and Return access_token
     """
-    url = 'https://id.twitch.tv/oauth2/token'
+    url = '{}/oauth2/token'.format(settings.DISCORD_API_ENDPOINT)
     data = {
-        'client_id': settings.TWITCH_CLIENT_ID,
-        'client_secret': settings.TWITCH_CLIENT_SECRET,
-        'grant_type': settings.TWITCH_GRANT_TYPE,
-        'redirect_uri': settings.TWITCH_REDIRECT_URI,
+        'client_id': settings.DISCORD_CLIENT_ID,
+        'client_secret': settings.DISCORD_CLIENT_SECRET,
+        'grant_type': settings.DISCORD_GRANT_TYPE,
+        'redirect_uri': settings.DISCORD_REDIRECT_URI,
         'code': code,
     }
-    headers = {'Accept': 'application/json'}
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     r = requests.post(url, data=data, headers=headers, timeout=10)
     logger.debug('status_code: {}'.format(r.status_code))
     logger.debug('content: {}'.format(r.content))
     return r.json()['access_token']
 
 
-def get_twitch(access_token):
+def get_user_profile(access_token):
     """
-    Get Twitch Profile for Authenticated User
+    Get Profile for Authenticated User
     """
-    url = 'https://api.twitch.tv/kraken/user'
+    url = '{}/users/@me'.format(settings.DISCORD_API_ENDPOINT)
     headers = {
-        'Accept': 'application/vnd.twitchtv.v5+json',
-        'Authorization': 'OAuth {}'.format(access_token),
+        'Authorization': 'Bearer {}'.format(access_token),
     }
     r = requests.get(url, headers=headers, timeout=10)
     logger.debug('status_code: {}'.format(r.status_code))
     logger.debug('content: {}'.format(r.content))
-    twitch_profile = r.json()
+    user_profile = r.json()
+    django_username = user_profile['username'] + user_profile['discriminator']
     return {
-        'username': twitch_profile['name'],
-        'first_name': twitch_profile['display_name'],
-        'email': twitch_profile['email'],
-        'email_verified': twitch_profile['email_verified'],
-        'user_id': twitch_profile['_id'],
-        'logo_url': twitch_profile['logo'],
+        'id': user_profile['id'],
+        'username': user_profile['username'],
+        'discriminator': user_profile['discriminator'],
+        'avatar': user_profile['avatar'],
+        'django_username': django_username,
     }
 
 
-def update_profile(user, data):
+def update_profile(user, user_profile):
     """
-    Update user_profile from GitHub data
+    Update Django user profile with provided data
     """
-    user.first_name = data['first_name']
-    user.email = data['email']
-    user.profile.email_verified = data['email_verified']
-    user.profile.twitch_id = data['user_id']
-    user.profile.logo_url = data['logo_url']
+    user.first_name = user_profile['username']
+    user.profile.discord_id = user_profile['id']
+    user.profile.avatar_hash = user_profile['avatar']
     return user
 
 
