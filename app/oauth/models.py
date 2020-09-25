@@ -6,12 +6,12 @@ from django.dispatch import receiver
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    email_verified = models.BooleanField(max_length=80, default=False)
-    twitch_id = models.IntegerField(blank=True, default=0)
-    logo_url = models.URLField(blank=True, default='')
+    discriminator = models.IntegerField(blank=True, default=0)
+    discord_id = models.CharField(blank=True, default=0, max_length=32)
+    avatar_hash = models.TextField(blank=True, default='')
 
     def __str__(self):
-        return '{} - {}'.format(self.user, self.twitch_id)
+        return '{}#{}'.format(self.user, self.discriminator)
 
 
 @receiver(post_save, sender=User)
