@@ -1,10 +1,8 @@
 # Blue Team
 
-[![build status](https://git.cssnr.com/shane/blue-team-docker/badges/master/build.svg)](https://git.cssnr.com/shane/blue-team-docker/commits/master) [![coverage report](https://git.cssnr.com/shane/blue-team-docker/badges/master/coverage.svg)](https://git.cssnr.com/shane/blue-team-docker/commits/master)
+Blue Team website. Coming soon...
 
-Coming soon...
-
-This is currently a Discord Oauth framework.
+- [https://blueteam.best/](https://dev.blueteam.best/)
 
 ### Frameworks
 

@@ -1,8 +1,8 @@
 import os
 from distutils.util import strtobool
 
-ROOT_URLCONF = 'twitch_site.urls'
-WSGI_APPLICATION = 'twitch_site.wsgi.application'
+ROOT_URLCONF = 'blueteam.urls'
+WSGI_APPLICATION = 'blueteam.wsgi.application'
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.environ['DJANGO_DATA_DIR']
@@ -31,6 +31,8 @@ DISCORD_CLIENT_SECRET = os.getenv('DISCORD_CLIENT_SECRET')
 DISCORD_REDIRECT_URI = os.getenv('DISCORD_REDIRECT_URI')
 DISCORD_GRANT_TYPE = os.getenv('DISCORD_GRANT_TYPE')
 DISCORD_SCOPE = os.getenv('DISCORD_SCOPE')
+
+BLUE_DISCORD_URL = os.getenv('BLUE_DISCORD_URL')
 
 USE_I18N = True
 USE_L10N = True

@@ -5,7 +5,7 @@ services:
     build: ./app
     image: blue-team-docker-app:latest
     env_file: settings.env
-    command: "gunicorn twitch_site.wsgi:application --workers 2 -b 0.0.0.0:9000"
+    command: "gunicorn blueteam.wsgi:application --workers 2 -b 0.0.0.0:9000"
     deploy:
       mode: global
     volumes:
