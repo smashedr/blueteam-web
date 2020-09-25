@@ -6,6 +6,7 @@ register = template.Library()
 
 @register.simple_tag(name='get_config')
 def get_config(value):
-    if value in settings:
+    try:
         return getattr(settings, value)
-    return None
+    except:
+        return None
