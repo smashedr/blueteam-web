@@ -3,7 +3,7 @@ version: '3.3'
 services:
   app:
     build: ./app
-    image: docker-twitch-app:latest
+    image: blue-team-docker-app:latest
     env_file: settings.env
     command: "gunicorn twitch_site.wsgi:application --workers 2 -b 0.0.0.0:9000"
     deploy:
@@ -13,7 +13,7 @@ services:
 
   nginx:
     build: ./nginx
-    image: docker-twitch-nginx:latest
+    image: blue-team-docker-nginx:latest
     env_file: settings.env
     deploy:
       mode: global
