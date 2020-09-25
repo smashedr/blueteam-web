@@ -7,8 +7,10 @@ from django.dispatch import receiver
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     discriminator = models.IntegerField(blank=True, default=0)
-    discord_id = models.CharField(blank=True, default=0, max_length=32)
+    discord_id = models.CharField(blank=True, default='', max_length=32)
     avatar_hash = models.TextField(blank=True, default='')
+    blue_team_member = models.BooleanField(blank=True, default=False)
+    blue_team_officer = models.BooleanField(blank=True, default=False)
     discord_roles = models.JSONField(blank=True, default=list)
 
     def __str__(self):

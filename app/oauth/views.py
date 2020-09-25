@@ -133,13 +133,14 @@ def get_user_profile(access_token):
     logger.debug('content: {}'.format(r.content))
     user_guild = r.json()
 
-    django_username = user_profile['username'] + user_profile['discriminator']
     return {
         'id': user_profile['id'],
         'username': user_profile['username'],
         'discriminator': user_profile['discriminator'],
+        'django_username': user_profile['username'] + user_profile['discriminator'],
         'avatar': user_profile['avatar'],
-        'django_username': django_username,
+        'blue_team_member': settings.BLUE_DISCORD_BLUE_ROLE in user_guild['roles'],
+        'blue_team_officer': settings.BLUE_DISCORD_OFFICER_ROLE in user_guild['roles'],
         'discord_roles': user_guild['roles'],
     }
 
@@ -152,6 +153,8 @@ def update_profile(user, user_profile):
     user.profile.discriminator = user_profile['discriminator']
     user.profile.discord_id = user_profile['id']
     user.profile.avatar_hash = user_profile['avatar']
+    user.profile.blue_team_member = user_profile['blue_team_member']
+    user.profile.blue_team_officer = user_profile['blue_team_officer']
     user.profile.discord_roles = user_profile['discord_roles']
     return user
 
