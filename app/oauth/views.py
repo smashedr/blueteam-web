@@ -119,6 +119,20 @@ def get_user_profile(access_token):
     logger.debug('status_code: {}'.format(r.status_code))
     logger.debug('content: {}'.format(r.content))
     user_profile = r.json()
+
+    url = '{}/guilds/{}/members/{}'.format(
+        settings.DISCORD_API_ENDPOINT,
+        settings.BLUE_DISCORD_ID,
+        user_profile['id'],
+    )
+    headers = {
+        'Authorization': 'Bot {}'.format(settings.BLUE_DISCORD_BOT_TOKEN),
+    }
+    r = requests.get(url, headers=headers, timeout=10)
+    logger.debug('status_code: {}'.format(r.status_code))
+    logger.debug('content: {}'.format(r.content))
+    user_guild = r.json()
+
     django_username = user_profile['username'] + user_profile['discriminator']
     return {
         'id': user_profile['id'],
@@ -126,6 +140,7 @@ def get_user_profile(access_token):
         'discriminator': user_profile['discriminator'],
         'avatar': user_profile['avatar'],
         'django_username': django_username,
+        'discord_roles': user_guild['roles'],
     }
 
 
@@ -134,8 +149,10 @@ def update_profile(user, user_profile):
     Update Django user profile with provided data
     """
     user.first_name = user_profile['username']
+    user.profile.discriminator = user_profile['discriminator']
     user.profile.discord_id = user_profile['id']
     user.profile.avatar_hash = user_profile['avatar']
+    user.profile.discord_roles = user_profile['discord_roles']
     return user
 
 

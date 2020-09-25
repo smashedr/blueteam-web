@@ -9,6 +9,7 @@ class Profile(models.Model):
     discriminator = models.IntegerField(blank=True, default=0)
     discord_id = models.CharField(blank=True, default=0, max_length=32)
     avatar_hash = models.TextField(blank=True, default='')
+    discord_roles = models.JSONField(blank=True, default=list)
 
     def __str__(self):
         return '{}#{}'.format(self.user, self.discriminator)
