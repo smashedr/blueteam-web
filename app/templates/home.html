@@ -13,9 +13,9 @@
                 <p class="lead">Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}
                     and welcome to Blue Team. Our website is coming soon...</p>
             {% else %}
-            <p class="lead">Hello and welcome to Blue Team. Our website is coming soon...</p>
+                <p class="lead">Hello and welcome to Blue Team. Our website is coming soon...</p>
             {% endif %}
-            <h4><a href="{% get_config "BLUE_DISCORD_URL" %}">Join our Discord <i class="fab fa-discord"></i></a></h4>
+            <h4><a class="text-info" href="{% get_config "BLUE_DISCORD_URL" %}">Join our Discord <i class="fab fa-discord"></i></a></h4>
         </div>
     </div>
 {% endblock %}
