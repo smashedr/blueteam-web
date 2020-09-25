@@ -1,4 +1,4 @@
-django<3
+django
 django-debug-toolbar
 django-extensions
 gunicorn
