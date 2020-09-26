@@ -78,12 +78,14 @@ def login_user(request, user_profile):
     Login or Create New User
     """
     try:
-        user = User.objects.filter(username=user_profile['django_username']).get()
+        logger.debug('try django_username: %s', user_profile['django_username'])
+        user = User.objects.get(username=user_profile['django_username'])
         user = update_profile(user, user_profile)
         user.save()
         login(request, user)
         return True
     except ObjectDoesNotExist:
+        logger.debug('except django_username: %s', user_profile['django_username'])
         user = User.objects.create_user(user_profile['django_username'])
         user = update_profile(user, user_profile)
         user.save()
