@@ -16,7 +16,6 @@ $(document).ready(function() {
             data: formData,
             beforeSend: function( jqXHR ){
                 $('#save-profile-btn').addClass('disabled');
-                $('#alerts-div').empty();
             },
             complete: function(){
                 $('#save-profile-btn').removeClass('disabled');
