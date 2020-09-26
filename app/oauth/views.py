@@ -62,6 +62,9 @@ def log_out(request):
     View  /oauth/logout/
     """
     next_url = get_next_url(request)
+    if next_url.strip('/') in ['profile']:
+        next_url = '/'
+    logger.debug('next_url: %s', next_url)
     request.session['login_next_url'] = next_url
     logout(request)
     return redirect(next_url)
