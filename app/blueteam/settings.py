@@ -17,7 +17,7 @@ TEMPLATES_DIRS = [os.path.join(BASE_DIR, 'templates')]
 SESSION_COOKIE_AGE = int(os.getenv('DJANGO_SESSION', 1209600))
 ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED', '*').strip('"').split(' ')
 DEBUG = strtobool(os.getenv('DJANGO_DEBUG', 'True'))
-SECRET_KEY = os.getenv('DJANGO_SECRET', 'xxxxx')
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 STATIC_ROOT = os.getenv('DJANGO_STATIC_DIR')
 MEDIA_ROOT = os.getenv('DJANGO_MEDIA_DIR')
 

@@ -12,7 +12,7 @@
             <h1>Guild Roster</h1>
 
             {% for member in guild_roster %}
-                {% include 'include/member.html' with member=member div_id='youractive' %}
+                {% include 'include/member.html' with member=member %}
                 <br>
             {% endfor %}
 

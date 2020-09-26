@@ -12,9 +12,16 @@
             <h1>Blue Team</h1>
             {% if user.is_authenticated and user.profile.blue_team_member %}
                 {# Blue Team #}
+                {% if not blue_profile %}
+                    <div class="alert alert-warning" role="alert">
+                        You have not yet added your profile! Please <a href="{% url 'home:profile' %}">
+                        click here</a> to update your profile...
+                    </div>
+                {% endif %}
                 <p class="lead">Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}.
-                    We are currently working on the website.</p>
-                <p>For now can <a class="text-info" href="{% url 'home:profile' %}">add/update your profile</a> for the
+                    Thank you for being part of Blue Team!</p>
+                <p>The website is still under construction but you can
+                    <a class="text-info" href="{% url 'home:profile' %}">add/update your profile</a> for the
                     <a class="text-info" href="{% url 'home:roster' %}">Guild Roster</a>.</p>
 
             {% else %}

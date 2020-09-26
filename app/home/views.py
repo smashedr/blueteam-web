@@ -4,45 +4,43 @@ from home.models import BlueProfile
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.views.decorators.http import require_http_methods
 from pprint import pformat
 
 logger = logging.getLogger('app')
 
 
 def home_view(request):
-    #  View: /
-    return render(request, 'home.html')
+    # View: /
+    if request.user.is_authenticated:
+        blue_profile = BlueProfile.objects.filter(discord_id=request.user.profile.discord_id).first()
+    else:
+        blue_profile = {}
+
+    data = {'blue_profile': blue_profile}
+    return render(request, 'home.html', data)
 
 
 def roster_view(request):
-    #  View: /
-    guild_roster = BlueProfile.objects.all()
+    # View: /roster/
+    guild_roster = BlueProfile.objects.all().order_by('-pk')
     return render(request, 'roster.html', {'guild_roster': guild_roster})
 
 
 @login_required
 def profile_view(request):
-    #  View: /
+    # View: /profile/
     if not request.method == 'POST':
         if request.user.is_authenticated:
-            logger.debug(request.user.profile.discord_id)
             blue_profile = BlueProfile.objects.filter(discord_id=request.user.profile.discord_id).first()
-            if blue_profile:
-                logger.debug('YES PROFILE FOUND')
-            else:
-                logger.debug('NO PROFILE FOUND')
-                blue_profile = {}
+            blue_profile = {} if not blue_profile else blue_profile
             return render(request, 'profile.html', {'blue_profile': blue_profile})
         else:
             return render(request, 'profile.html')
 
     else:
-        logger.debug(pformat(request.POST))  # DEBUGGING ONLY
+        logger.debug(pformat(request.POST))  # LOCAL DEBUGGING ONLY
         form = ProfileForm(request.POST)
-        if not form.is_valid():
-            return JsonResponse(form.errors, status=400)
-        else:
+        if form.is_valid():
             blue_profile = BlueProfile(
                 discord_id=request.user.profile.discord_id,
                 main_char=form.cleaned_data['main_char'],
@@ -53,17 +51,5 @@ def profile_view(request):
             )
             blue_profile.save()
             return JsonResponse({'message': 'ok'}, status=200)
-
-
-@login_required
-@require_http_methods(['POST'])
-def create_cm(request):
-    """
-    View: /profile/update/
-    """
-    logger.debug(pformat(request.POST))  # DEBUGGING ONLY
-    form = ProfileForm(request.POST)
-    if not form.is_valid():
-        return JsonResponse(form.errors, status=400)
-    else:
-        pass
+        else:
+            return JsonResponse(form.errors, status=400)

@@ -1,5 +1,5 @@
 {% extends "main.html" %}
-{% block home_active %}active{% endblock %}
+{% block profile_active %}active{% endblock %}
 {% block title %}User Profile{% endblock %}
 {% load static %}
 {% load home_tags %}
@@ -9,6 +9,7 @@
 {% block body %}
     <div class="row mt-2">
         <div class="col">
+
             <h1>Profile</h1>
 
             <p class="lead">Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}.</p>
@@ -64,6 +65,7 @@
                 <span style="display:none;margin-left:10px;" id="profile_saved" class="text-success">
                     <i class="fas fa-check-circle"></i> Profile Saved</span>
             </form>
+
         </div>
     </div>
 {% endblock %}

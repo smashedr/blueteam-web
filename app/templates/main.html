@@ -8,12 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <meta name="author" content="Shane"/>
-    <meta name="title" content="Blue Team is Best"/>
-    <meta name="description" content="Blue Team - The Best Team..."/>
+    <meta name="title" content="Blue Team Website"/>
+    <meta name="description" content="Blue Team - The Best Team!"/>
 
     <meta property="og:author" content="Shane">
-    <meta property="og:title" content="Blue Team is Best">
-    <meta property="og:description" content="Blue Team - The Best Team...">
+    <meta property="og:title" content="Blue Team Website">
+    <meta property="og:description" content="Blue Team - The Best Team!">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'home:index' %}">
     <meta property="og:image" content="{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% static 'images/logo.png' %}">
@@ -39,7 +39,6 @@
                     aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="navbarColor02">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item {% block home_active %}{% endblock %}">
