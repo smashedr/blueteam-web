@@ -59,7 +59,7 @@ if DEBUG:
     ]
 
     def show_toolbar(request):
-        return True if request.user.is_staff else False
+        return True if request.user.is_superuser else False
 
     DEBUG_TOOLBAR_CONFIG = {'SHOW_TOOLBAR_CALLBACK': show_toolbar}
 
