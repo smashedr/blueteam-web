@@ -10,6 +10,7 @@
         <div class="col">
 
             <h1>Blue Team</h1>
+
             {% if user.is_authenticated and user.profile.blue_team_member %}
                 {# Blue Team #}
                 {% if not blue_profile %}
@@ -39,8 +40,13 @@
 
             {% endif %}
             {# Everyone #}
-            <br>
-            <h4><a class="text-info" href="{% get_config "BLUE_DISCORD_URL" %}">Join our Discord <i class="fab fa-discord"></i></a></h4>
+            <p><a class="text-info" href="{% get_config "BLUE_DISCORD_URL" %}">Join our Discord <i class="fab fa-discord"></i></a></p>
+
+            <h2>Blue News</h2>
+            {% for news in blue_news %}
+                {% include 'include/news-home.html' with news=news %}
+                <br>
+            {% endfor %}
 
         </div>
     </div>

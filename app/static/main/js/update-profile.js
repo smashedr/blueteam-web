@@ -6,7 +6,6 @@ $(document).ready(function() {
     });
 
     $('#update-profile-form').on('submit', function(event){
-        console.log('update-profile-form function activated');
         event.preventDefault();
         if ($('#save-profile-btn').hasClass('disabled')) { return; }
         var formData = new FormData($(this)[0]);

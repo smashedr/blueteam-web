@@ -2,7 +2,7 @@ import logging
 import requests
 import urllib.parse
 from django.contrib.auth import login, logout
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.shortcuts import HttpResponseRedirect, HttpResponse
@@ -155,13 +155,20 @@ def update_profile(user, user_profile):
     """
     Update Django user profile with provided data
     """
+    logger.debug('blue_team_officer: %s', user_profile['blue_team_officer'])
+    if user_profile['blue_team_officer']:
+        logger.debug('adding officer: %s', user.username)
+        officers = Group.objects.get(name='Officers')
+        officers.user_set.add(user)
+    blue = user_profile['blue_team_member'] or user_profile['blue_team_officer']
     user.first_name = user_profile['username']
     user.profile.discriminator = user_profile['discriminator']
     user.profile.discord_id = user_profile['id']
     user.profile.avatar_hash = user_profile['avatar']
-    user.profile.blue_team_member = user_profile['blue_team_member']
+    user.profile.blue_team_member = blue
     user.profile.blue_team_officer = user_profile['blue_team_officer']
     user.profile.discord_roles = user_profile['discord_roles']
+    user.is_staff = user_profile['blue_team_officer']
     return user
 
 
