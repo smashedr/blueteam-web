@@ -27,11 +27,14 @@
             {% else %}
                 {# NOT Blue Team #}
                 {% if user.is_authenticated %}
-                    <p class="lead">Hello and welcome to Blue Team. Our website is coming soon...</p>
-                {% else %}
                     <p class="lead">Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}
                         and welcome to Blue Team. Our website is coming soon...</p>
+
+                {% else %}
+                    <p class="lead">Hello and welcome to Blue Team. Our website is coming soon...</p>
+
                 {% endif %}
+
                 <p>Eventually we will post news, progress, <a class="text-info" href="{% url 'home:roster' %}">guild roster</a> and more...</p>
 
             {% endif %}
