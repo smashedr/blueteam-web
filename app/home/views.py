@@ -28,11 +28,8 @@ def profile_view(request):
         if request.user.is_authenticated:
             logger.debug(request.user.profile.discord_id)
             blue_profile = BlueProfile.objects.filter(discord_id=request.user.profile.discord_id).first()
-            logger.debug(blue_profile.user_description)
-            # logger.debug(blue_profile)
             if blue_profile:
                 logger.debug('YES PROFILE FOUND')
-                # logger.debug(blue_profile)
             else:
                 logger.debug('NO PROFILE FOUND')
                 blue_profile = {}
