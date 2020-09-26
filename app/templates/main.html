@@ -8,12 +8,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <meta name="author" content="Shane"/>
-    <meta name="title" content="Blue Team is Best"/>
-    <meta name="description" content="Blue Team - The Best Team..."/>
+    <meta name="title" content="Blue Team Website"/>
+    <meta name="description" content="Blue Team - The Best Team!"/>
 
     <meta property="og:author" content="Shane">
-    <meta property="og:title" content="Blue Team is Best">
-    <meta property="og:description" content="Blue Team - The Best Team...">
+    <meta property="og:title" content="Blue Team Website">
+    <meta property="og:description" content="Blue Team - The Best Team!">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% url 'home:index' %}">
     <meta property="og:image" content="{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% static 'images/logo.png' %}">
@@ -39,11 +39,13 @@
                     aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="navbarColor02">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item {% block home_active %}{% endblock %}">
                         <a class="nav-link" href="{% url 'home:index' %}">Home</a>
+                    </li>
+                    <li class="nav-item {% block roster_active %}{% endblock %}">
+                        <a class="nav-link" href="{% url 'home:roster' %}">Guild Roster</a>
                     </li>
                 </ul>
 
@@ -52,8 +54,13 @@
                         Log in with Discord
                         <i class="fas fa-sign-in-alt"></i></a>
                 {% else %}
-                    <a href="https://discord.com/login" target="_blank" class="text-info mr-3">
-                        {% if request.user.first_name %}{{ request.user.first_name }}{% else %}{{ request.user.username }}{% endif %}</a>
+                    {% if user.profile.blue_team_member %}
+                        <a href="{% url 'home:profile' %}" class="text-info mr-3">
+                            {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</a>
+                    {% else %}
+                        <a href="https://discord.com/login" class="text-info mr-3">
+                            {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</a>
+                    {% endif %}
                     {% if user.is_staff %}
                         <a href="{% url 'admin:index' %}" class="btn btn-outline-primary mr-1" role="button">
                             Admin

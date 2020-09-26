@@ -62,6 +62,12 @@ def log_out(request):
     View  /oauth/logout/
     """
     next_url = get_next_url(request)
+
+    # Hack to prevent login loop when logging out on a secure page
+    if next_url.strip('/') in ['profile']:
+        next_url = '/'
+    logger.debug('next_url: %s', next_url)
+
     request.session['login_next_url'] = next_url
     logout(request)
     return redirect(next_url)
@@ -119,13 +125,29 @@ def get_user_profile(access_token):
     logger.debug('status_code: {}'.format(r.status_code))
     logger.debug('content: {}'.format(r.content))
     user_profile = r.json()
-    django_username = user_profile['username'] + user_profile['discriminator']
+
+    url = '{}/guilds/{}/members/{}'.format(
+        settings.DISCORD_API_ENDPOINT,
+        settings.BLUE_DISCORD_ID,
+        user_profile['id'],
+    )
+    headers = {
+        'Authorization': 'Bot {}'.format(settings.BLUE_DISCORD_BOT_TOKEN),
+    }
+    r = requests.get(url, headers=headers, timeout=10)
+    logger.debug('status_code: {}'.format(r.status_code))
+    logger.debug('content: {}'.format(r.content))
+    user_guild = r.json()
+
     return {
         'id': user_profile['id'],
         'username': user_profile['username'],
         'discriminator': user_profile['discriminator'],
+        'django_username': user_profile['username'] + user_profile['discriminator'],
         'avatar': user_profile['avatar'],
-        'django_username': django_username,
+        'blue_team_member': settings.BLUE_DISCORD_BLUE_ROLE in user_guild['roles'],
+        'blue_team_officer': settings.BLUE_DISCORD_OFFICER_ROLE in user_guild['roles'],
+        'discord_roles': user_guild['roles'],
     }
 
 
@@ -134,8 +156,12 @@ def update_profile(user, user_profile):
     Update Django user profile with provided data
     """
     user.first_name = user_profile['username']
+    user.profile.discriminator = user_profile['discriminator']
     user.profile.discord_id = user_profile['id']
     user.profile.avatar_hash = user_profile['avatar']
+    user.profile.blue_team_member = user_profile['blue_team_member']
+    user.profile.blue_team_officer = user_profile['blue_team_officer']
+    user.profile.discord_roles = user_profile['discord_roles']
     return user
 
 
