@@ -16,7 +16,9 @@ def has_blue_access(user):
 def home_view(request):
     # View: /
     if request.user.is_authenticated:
-        blue_profile = BlueProfile.objects.filter(discord_id=request.user.profile.discord_id).first()
+        blue_profile = BlueProfile.objects.filter(
+            discord_id=request.user.profile.discord_id
+        ).first()
     else:
         blue_profile = {}
 
@@ -36,9 +38,12 @@ def profile_view(request):
     # View: /profile/
     if not request.method == 'POST':
         if request.user.is_authenticated:
-            blue_profile = BlueProfile.objects.filter(discord_id=request.user.profile.discord_id).first()
+            blue_profile = BlueProfile.objects.filter(
+                discord_id=request.user.profile.discord_id
+            ).first()
             blue_profile = {} if not blue_profile else blue_profile
-            return render(request, 'profile.html', {'blue_profile': blue_profile})
+            data = {'blue_profile': blue_profile}
+            return render(request, 'profile.html', data)
         else:
             return render(request, 'profile.html')
 
