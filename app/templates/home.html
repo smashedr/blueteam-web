@@ -14,8 +14,8 @@
                 {# Blue Team #}
                 {% if not blue_profile %}
                     <div class="alert alert-warning" role="alert">
-                        You have not yet added your profile! Please <a href="{% url 'home:profile' %}">
-                        click here</a> to update your profile...
+                        You have not yet added your profile! Please <a href="{% url 'home:profile' %}">click here</a>
+                        to update your profile...
                     </div>
                 {% endif %}
                 <p class="lead">Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}.

@@ -1,12 +1,16 @@
 import logging
 from home.forms import ProfileForm
 from home.models import BlueProfile
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
 from django.shortcuts import render
 from pprint import pformat
 
 logger = logging.getLogger('app')
+
+
+def has_blue_access(user):
+    return user.profile.blue_team_member
 
 
 def home_view(request):
@@ -27,6 +31,7 @@ def roster_view(request):
 
 
 @login_required
+@user_passes_test(has_blue_access, login_url='/')
 def profile_view(request):
     # View: /profile/
     if not request.method == 'POST':
