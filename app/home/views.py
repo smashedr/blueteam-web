@@ -26,9 +26,15 @@ def home_view(request):
     else:
         blue_profile = {}
 
-    blue_news = BlueNews.objects.all().order_by('-pk')
+    blue_news = BlueNews.objects.all().order_by('-pk')[:4]
     data = {'blue_profile': blue_profile, 'blue_news': blue_news}
     return render(request, 'home.html', data)
+
+
+def news_view(request):
+    # View: /roster/
+    blue_news = BlueNews.objects.all().order_by('-pk')[:30]
+    return render(request, 'news.html', {'blue_news': blue_news})
 
 
 def roster_view(request):
