@@ -1,11 +1,19 @@
 from django.contrib import admin
-from oauth.models import Profile
+from django.contrib.auth.admin import UserAdmin
+from .models import CustomUser
 
 
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    ordering = ('-pk',)
-    list_display = ('user', 'discriminator', 'discord_id')
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+    list_display = ('username', 'first_name', 'discriminator', 'discord_id', 'is_staff',)
+    list_filter = ('is_staff',)
+    fieldsets = UserAdmin.fieldsets + (
+        ('OAuth', {'fields': ('discord_username', 'discriminator', 'discord_id', 'discord_roles',
+                              'blue_team_member', 'blue_team_officer',)}),
+    )
+    readonly_fields = ('discord_username', 'discriminator', 'discord_id', 'discord_roles',)
+    search_fields = ('username', 'first_name', 'discord_id',)
+    ordering = ('username',)
 
-    def has_add_permission(self, request, obj=None):
-        return False
+
+admin.site.register(CustomUser, CustomUserAdmin)

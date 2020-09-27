@@ -1,27 +1,27 @@
 import logging
-from home.forms import ProfileForm
-from home.models import BlueProfile, BlueNews
+from pprint import pformat
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
 from django.shortcuts import render
-from pprint import pformat
+from .forms import ProfileForm
+from .models import BlueProfile, BlueNews
 
 logger = logging.getLogger('app')
 
 
 def is_blue_member(user):
-    return user.profile.blue_team_member
+    return user.blue_team_member
 
 
 def is_blue_officer(user):
-    return user.profile.blue_team_officer
+    return user.blue_team_officer
 
 
 def home_view(request):
     # View: /
     if request.user.is_authenticated:
         blue_profile = BlueProfile.objects.filter(
-            discord_id=request.user.profile.discord_id
+            discord_id=request.user.discord_id
         ).first()
     else:
         blue_profile = {}
@@ -50,7 +50,7 @@ def profile_view(request):
     if not request.method == 'POST':
         if request.user.is_authenticated:
             blue_profile = BlueProfile.objects.filter(
-                discord_id=request.user.profile.discord_id
+                discord_id=request.user.discord_id
             ).first()
             blue_profile = {} if not blue_profile else blue_profile
             data = {'blue_profile': blue_profile}
@@ -63,7 +63,7 @@ def profile_view(request):
         form = ProfileForm(request.POST)
         if form.is_valid():
             blue_profile = BlueProfile(
-                discord_id=request.user.profile.discord_id,
+                discord_id=request.user.discord_id,
                 main_char=form.cleaned_data['main_char'],
                 main_class=form.cleaned_data['main_class'],
                 main_role=form.cleaned_data['main_role'],

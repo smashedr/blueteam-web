@@ -57,7 +57,7 @@
                         Log in with Discord
                         <i class="fas fa-sign-in-alt"></i></a>
                 {% else %}
-                    {% if user.profile.blue_team_member %}
+                    {% if user.blue_team_member %}
                         <a href="{% url 'home:profile' %}" class="text-info mr-3">
                             {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</a>
                     {% else %}

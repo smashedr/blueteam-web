@@ -2,12 +2,13 @@ import logging
 import requests
 import urllib.parse
 from django.contrib.auth import login, logout
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect
 from django.shortcuts import HttpResponseRedirect, HttpResponse
 from django.views.decorators.http import require_http_methods
 from django.conf import settings
+from .models import CustomUser
 
 logger = logging.getLogger('app')
 
@@ -79,14 +80,14 @@ def login_user(request, user_profile):
     """
     try:
         logger.debug('try django_username: %s', user_profile['django_username'])
-        user = User.objects.get(username=user_profile['django_username'])
+        user = CustomUser.objects.get(username=user_profile['django_username'])
         user = update_profile(user, user_profile)
         user.save()
         login(request, user)
         return True
     except ObjectDoesNotExist:
         logger.debug('except django_username: %s', user_profile['django_username'])
-        user = User.objects.create_user(user_profile['django_username'])
+        user = CustomUser.objects.create_user(user_profile['django_username'])
         user = update_profile(user, user_profile)
         user.save()
         login(request, user)
@@ -150,6 +151,7 @@ def get_user_profile(access_token):
         'blue_team_member': settings.BLUE_DISCORD_BLUE_ROLE in user_guild['roles'],
         'blue_team_officer': settings.BLUE_DISCORD_OFFICER_ROLE in user_guild['roles'],
         'discord_roles': user_guild['roles'],
+        'discord_nick': user_guild['nick'] or user_profile['username'],
     }
 
 
@@ -157,6 +159,8 @@ def update_profile(user, user_profile):
     """
     Update Django user profile with provided data
     """
+    blue = user_profile['blue_team_member'] or user_profile['blue_team_officer']
+
     officers = Group.objects.get(name='Officers')
     logger.debug('blue_team_officer: %s', user_profile['blue_team_officer'])
     if user_profile['blue_team_officer']:
@@ -164,14 +168,15 @@ def update_profile(user, user_profile):
     else:
         officers.user_set.remove(user)
 
-    blue = user_profile['blue_team_member'] or user_profile['blue_team_officer']
     user.first_name = user_profile['username']
-    user.profile.discriminator = user_profile['discriminator']
-    user.profile.discord_id = user_profile['id']
-    user.profile.avatar_hash = user_profile['avatar']
-    user.profile.blue_team_member = blue
-    user.profile.blue_team_officer = user_profile['blue_team_officer']
-    user.profile.discord_roles = user_profile['discord_roles']
+    user.last_name = user_profile['discriminator']
+    user.discord_username = user_profile['discord_nick']
+    user.discriminator = user_profile['discriminator']
+    user.discord_id = user_profile['id']
+    user.avatar_hash = user_profile['avatar']
+    user.blue_team_member = blue
+    user.blue_team_officer = user_profile['blue_team_officer']
+    user.discord_roles = user_profile['discord_roles']
     user.is_staff = user_profile['blue_team_officer']
     return user
 

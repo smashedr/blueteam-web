@@ -7,7 +7,7 @@
 
 {% block body %}
 
-        {% if user.is_authenticated and user.profile.blue_team_member %}
+        {% if user.is_authenticated and user.blue_team_member %}
             {% include 'home/blue.html' %}
         {% else %}
             {% include 'home/public.html' %}
