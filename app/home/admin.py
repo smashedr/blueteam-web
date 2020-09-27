@@ -1,5 +1,5 @@
 from django.contrib import admin
-from home.models import BlueProfile, BlueNews
+from .models import BlueProfile, BlueNews
 
 
 @admin.register(BlueProfile)

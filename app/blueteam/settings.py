@@ -4,6 +4,8 @@ from distutils.util import strtobool
 ROOT_URLCONF = 'blueteam.urls'
 WSGI_APPLICATION = 'blueteam.wsgi.application'
 
+AUTH_USER_MODEL = 'oauth.CustomUser'
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.environ['DJANGO_DATA_DIR']
 

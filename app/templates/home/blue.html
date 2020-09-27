@@ -17,7 +17,7 @@
             <a class="text-info" href="{% url 'home:profile' %}">add/update your profile</a> for the
             <a class="text-info" href="{% url 'home:roster' %}">Guild Roster</a>.</p>
 
-        {% if user.profile.blue_team_officer %}
+        {% if user.blue_team_officer %}
             <p>Officers can now add/edit Blue News from the
                 <a class="text-info" href="{% url 'admin:index' %}">Admin Panel</a>.</p>
         {% endif %}
