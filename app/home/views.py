@@ -3,8 +3,8 @@ from pprint import pformat
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
 from django.shortcuts import render
-from .forms import ProfileForm
-from .models import BlueProfile, BlueNews
+from .forms import ProfileForm, ApplicantsForm
+from .models import BlueProfile, BlueNews, GuildApplicants
 
 logger = logging.getLogger('app')
 
@@ -71,6 +71,33 @@ def profile_view(request):
                 show_in_roster=form.cleaned_data['show_in_roster'],
             )
             blue_profile.save()
+            return JsonResponse({'message': 'ok'}, status=200)
+        else:
+            return JsonResponse(form.errors, status=400)
+
+
+def apply_view(request):
+    # View: /apply/
+    if not request.method == 'POST':
+        return render(request, 'apply.html')
+    else:
+        logger.debug(pformat(request.POST))  # LOCAL DEBUGGING ONLY
+        form = ApplicantsForm(request.POST)
+        if form.is_valid():
+            new_app = GuildApplicants(
+                char_name=form.cleaned_data['char_name'],
+                char_role=form.cleaned_data['char_role'],
+                warcraft_logs=form.cleaned_data['warcraft_logs'],
+                speed_test=form.cleaned_data['speed_test'],
+                spoken_langs=form.cleaned_data['spoken_langs'],
+                native_lang=form.cleaned_data['native_lang'],
+                fri_raid=form.cleaned_data['fri_raid'],
+                sat_raid=form.cleaned_data['sat_raid'],
+                raid_exp=form.cleaned_data['raid_exp'],
+                why_blue=form.cleaned_data['why_blue'],
+            )
+            new_app.save()
+            request.session['application_submitted'] = True
             return JsonResponse({'message': 'ok'}, status=200)
         else:
             return JsonResponse(form.errors, status=400)

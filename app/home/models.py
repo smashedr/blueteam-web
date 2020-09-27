@@ -36,3 +36,38 @@ class BlueNews(models.Model):
     class Meta:
         verbose_name = 'Blue News'
         verbose_name_plural = 'Blue News'
+
+
+class GuildApplicants(models.Model):
+    PENDING = 'PE'
+    APPROVED = 'AP'
+    DECLINED = 'DE'
+    APP_STATUS_CHOICES = [
+        (PENDING, 'Pending'),
+        (APPROVED, 'Approved'),
+        (DECLINED, 'Declined'),
+    ]
+    char_name = models.CharField(max_length=32)
+    char_role = models.CharField(max_length=32)
+    warcraft_logs = models.URLField()
+    speed_test = models.URLField()
+    spoken_langs = models.CharField(max_length=32)
+    native_lang = models.CharField(max_length=32)
+    fri_raid = models.BooleanField(default=False)
+    sat_raid = models.BooleanField(default=False)
+    raid_exp = models.TextField(blank=True)
+    why_blue = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    app_status = models.CharField(
+        max_length=2,
+        choices=APP_STATUS_CHOICES,
+        default=PENDING,
+    )
+
+    def __str__(self):
+        return '{} - {}'.format(self.char_name, self.char_role)
+
+    class Meta:
+        verbose_name = 'Guild Applicants'
+        verbose_name_plural = 'Guild Applicants'
