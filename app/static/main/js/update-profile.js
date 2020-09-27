@@ -6,7 +6,6 @@ $(document).ready(function() {
     });
 
     $('#update-profile-form').on('submit', function(event){
-        console.log('update-profile-form function activated');
         event.preventDefault();
         if ($('#save-profile-btn').hasClass('disabled')) { return; }
         var formData = new FormData($(this)[0]);
@@ -16,7 +15,6 @@ $(document).ready(function() {
             data: formData,
             beforeSend: function( jqXHR ){
                 $('#save-profile-btn').addClass('disabled');
-                $('#alerts-div').empty();
             },
             complete: function(){
                 $('#save-profile-btn').removeClass('disabled');

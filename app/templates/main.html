@@ -44,8 +44,11 @@
                     <li class="nav-item {% block home_active %}{% endblock %}">
                         <a class="nav-link" href="{% url 'home:index' %}">Home</a>
                     </li>
+                    <li class="nav-item {% block news_active %}{% endblock %}">
+                        <a class="nav-link" href="{% url 'home:news' %}">News</a>
+                    </li>
                     <li class="nav-item {% block roster_active %}{% endblock %}">
-                        <a class="nav-link" href="{% url 'home:roster' %}">Guild Roster</a>
+                        <a class="nav-link" href="{% url 'home:roster' %}">Roster</a>
                     </li>
                 </ul>
 
@@ -58,7 +61,7 @@
                         <a href="{% url 'home:profile' %}" class="text-info mr-3">
                             {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</a>
                     {% else %}
-                        <a href="https://discord.com/login" class="text-info mr-3">
+                        <a href="https://discord.com/login" class="text-info mr-3" target="_blank">
                             {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</a>
                     {% endif %}
                     {% if user.is_staff %}

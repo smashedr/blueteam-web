@@ -1,0 +1,37 @@
+{% load home_tags %}
+
+<div class="row mt-2">
+
+    <div class="col-md-8">
+        <h1>Blue Team</h1>
+
+        {% if not blue_profile %}
+            <div class="alert alert-warning" role="alert">
+                You have not yet added your profile! Please <a href="{% url 'home:profile' %}">click here</a>
+                to update your profile...
+            </div>
+        {% endif %}
+        <p class="lead">Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}.
+            Thank you for being part of Blue Team!</p>
+        <p>The website is still under construction but you can
+            <a class="text-info" href="{% url 'home:profile' %}">add/update your profile</a> for the
+            <a class="text-info" href="{% url 'home:roster' %}">Guild Roster</a>.</p>
+
+        {% if user.profile.blue_team_officer %}
+            <p>Officers can now add/edit Blue News from the
+                <a class="text-info" href="{% url 'admin:index' %}">Admin Panel</a>.</p>
+        {% endif %}
+
+        <p><a class="text-info" href="{% get_config "BLUE_DISCORD_URL" %}">Join our Discord <i class="fab fa-discord"></i></a> for more information...</p>
+    </div>
+
+    <div class="col-md-4">
+        <h2><a class="text-info" href="{% url 'home:news' %}">Blue News</a></h2>
+        {% for news in blue_news %}
+            {% include 'include/news.html' with news=news %}
+            <br>
+        {% endfor %}
+        <p><a class="text-info" href="{% url 'home:news' %}">Read more news...</a></p>
+    </div>
+
+</div>

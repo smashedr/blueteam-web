@@ -1,0 +1,21 @@
+{% extends "main.html" %}
+{% block news_active %}active{% endblock %}
+{% block title %}Blue News{% endblock %}
+{% load home_tags %}
+
+{% block head %}{% endblock %}
+
+{% block body %}
+    <div class="row mt-2">
+        <div class="col">
+
+            <h1>Blue News</h1>
+
+            {% for news in blue_news %}
+                {% include 'include/news.html' with news=news %}
+                <br>
+            {% endfor %}
+
+        </div>
+    </div>
+{% endblock %}

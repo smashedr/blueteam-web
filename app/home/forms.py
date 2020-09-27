@@ -7,3 +7,9 @@ class ProfileForm(forms.Form):
     main_role = forms.CharField(max_length=32)
     user_description = forms.CharField(required=False)
     show_in_roster = forms.BooleanField(required=False)
+
+
+class NewsForm(forms.Form):
+    title = forms.CharField(max_length=64)
+    display_name = forms.CharField(max_length=32)
+    description = forms.CharField()

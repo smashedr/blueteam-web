@@ -6,42 +6,11 @@
 {% block head %}{% endblock %}
 
 {% block body %}
-    <div class="row mt-2">
-        <div class="col">
 
-            <h1>Blue Team</h1>
-            {% if user.is_authenticated and user.profile.blue_team_member %}
-                {# Blue Team #}
-                {% if not blue_profile %}
-                    <div class="alert alert-warning" role="alert">
-                        You have not yet added your profile! Please <a href="{% url 'home:profile' %}">click here</a>
-                        to update your profile...
-                    </div>
-                {% endif %}
-                <p class="lead">Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}.
-                    Thank you for being part of Blue Team!</p>
-                <p>The website is still under construction but you can
-                    <a class="text-info" href="{% url 'home:profile' %}">add/update your profile</a> for the
-                    <a class="text-info" href="{% url 'home:roster' %}">Guild Roster</a>.</p>
+        {% if user.is_authenticated and user.profile.blue_team_member %}
+            {% include 'home/blue.html' %}
+        {% else %}
+            {% include 'home/public.html' %}
+        {% endif %}
 
-            {% else %}
-                {# NOT Blue Team #}
-                {% if user.is_authenticated %}
-                    <p class="lead">Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}
-                        and welcome to Blue Team. Our website is coming soon...</p>
-
-                {% else %}
-                    <p class="lead">Hello and welcome to Blue Team. Our website is coming soon...</p>
-
-                {% endif %}
-
-                <p>Eventually we will post news, progress, <a class="text-info" href="{% url 'home:roster' %}">guild roster</a> and more...</p>
-
-            {% endif %}
-            {# Everyone #}
-            <br>
-            <h4><a class="text-info" href="{% get_config "BLUE_DISCORD_URL" %}">Join our Discord <i class="fab fa-discord"></i></a></h4>
-
-        </div>
-    </div>
 {% endblock %}

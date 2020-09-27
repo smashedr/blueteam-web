@@ -1,6 +1,6 @@
 import logging
 from home.forms import ProfileForm
-from home.models import BlueProfile
+from home.models import BlueProfile, BlueNews
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -9,8 +9,12 @@ from pprint import pformat
 logger = logging.getLogger('app')
 
 
-def has_blue_access(user):
+def is_blue_member(user):
     return user.profile.blue_team_member
+
+
+def is_blue_officer(user):
+    return user.profile.blue_team_officer
 
 
 def home_view(request):
@@ -22,8 +26,15 @@ def home_view(request):
     else:
         blue_profile = {}
 
-    data = {'blue_profile': blue_profile}
+    blue_news = BlueNews.objects.all().order_by('-pk')[:2]
+    data = {'blue_profile': blue_profile, 'blue_news': blue_news}
     return render(request, 'home.html', data)
+
+
+def news_view(request):
+    # View: /roster/
+    blue_news = BlueNews.objects.all().order_by('-pk')[:50]
+    return render(request, 'news.html', {'blue_news': blue_news})
 
 
 def roster_view(request):
@@ -33,7 +44,7 @@ def roster_view(request):
 
 
 @login_required
-@user_passes_test(has_blue_access, login_url='/')
+@user_passes_test(is_blue_member, login_url='/')
 def profile_view(request):
     # View: /profile/
     if not request.method == 'POST':

@@ -1,8 +1,10 @@
 # Blue Team
 
-- [https://blueteam.best/](https://dev.blueteam.best/)
+Blue Team website.
 
-Blue Team website. Coming soon...
+- [https://blueteam.best/](https://blueteam.best/)
+
+Coming soon...
 
 ### Frameworks
 
