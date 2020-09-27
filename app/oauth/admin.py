@@ -12,7 +12,7 @@ class CustomUserAdmin(UserAdmin):
                               'blue_team_member', 'blue_team_officer',)}),
     )
     readonly_fields = ('discord_username', 'discriminator', 'discord_id', 'discord_roles',)
-    search_fields = ('username', 'first_name', 'discord_id',)
+    search_fields = ('username', 'discord_id',)
     ordering = ('username',)
 
 

@@ -5,33 +5,39 @@ $(document).ready(function() {
         $(this).removeClass('is-invalid');
     });
 
-    $('#update-profile-form').on('submit', function(event){
+    $('#apply-form').on('submit', function(event){
         event.preventDefault();
-        if ($('#save-profile-btn').hasClass('disabled')) { return; }
+        if ($('#submit-app-btn').hasClass('disabled')) { return; }
         var formData = new FormData($(this)[0]);
         $.ajax({
             url: window.location.pathname,
             type: 'POST',
             data: formData,
             beforeSend: function( jqXHR ){
-                $('#save-profile-btn').addClass('disabled');
+                $('#submit-app-btn').addClass('disabled');
             },
             complete: function(){
-                $('#save-profile-btn').removeClass('disabled');
+                $('#submit-app-btn').removeClass('disabled');
             },
             success: function(data, textStatus, jqXHR){
                 console.log('Status: '+jqXHR.status+', Data: '+JSON.stringify(data));
-                $("#profile_saved").show();
+                $("#apply-form").hide();
+                $("#apply-success").show();
             },
             error: function(data, textStatus) {
                 console.log('Status: '+data.status+', Response: '+data.responseText);
                 try {
-                    $($('#update-profile-form').prop('elements')).each(function () {
-                        if (data.responseJSON.hasOwnProperty(this.name)) {
-                            $('#' + this.name + '-invalid').empty().append(data.responseJSON[this.name]);
-                            $(this).addClass('is-invalid');
-                        }
-                    });
+                    console.log(data.responseJSON);
+                    if (data.responseJSON.hasOwnProperty('err_msg')) {
+                        alert(data.responseJSON['err_msg'])
+                    } else {
+                        $($('#apply-form').prop('elements')).each(function () {
+                            if (data.responseJSON.hasOwnProperty(this.name)) {
+                                $('#' + this.name + '-invalid').empty().append(data.responseJSON[this.name]);
+                                $(this).addClass('is-invalid');
+                            }
+                        });
+                    }
                 }
                 catch(error){
                     console.log(error);
