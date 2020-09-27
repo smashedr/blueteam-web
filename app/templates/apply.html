@@ -12,7 +12,12 @@
 
             <h1>Apply to Blue</h1>
 
-            {% if not request.session.application_submitted %}
+            {% if request.user.blue_team_member %}
+                <div class="alert alert-info" role="alert">
+                    It appears you are already in Blue Team.
+                    If you believe this is an error try logging out and back in with a different user.
+                </div>
+            {% elif not request.session.application_submitted %}
                 <form id="apply-form" name="apply-form" method="POST" action="{% url 'home:apply' %}">
                     {% csrf_token %}
                     <div class="form-row">

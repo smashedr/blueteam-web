@@ -50,9 +50,11 @@
                     <li class="nav-item {% block roster_active %}{% endblock %}">
                         <a class="nav-link" href="{% url 'home:roster' %}">Roster</a>
                     </li>
-                    <li class="nav-item {% block apply_active %}{% endblock %}">
-                        <a class="nav-link" href="{% url 'home:apply' %}">Apply to Blue</a>
-                    </li>
+                    {% if not request.user.blue_team_member %}
+                        <li class="nav-item {% block apply_active %}{% endblock %}">
+                            <a class="nav-link" href="{% url 'home:apply' %}">Apply to Blue</a>
+                        </li>
+                    {% endif %}
                 </ul>
 
                 {% if not request.user.is_authenticated %}
