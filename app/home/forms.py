@@ -26,3 +26,4 @@ class ApplicantsForm(forms.Form):
     sat_raid = forms.BooleanField(required=False)
     raid_exp = forms.CharField()
     why_blue = forms.CharField()
+    contact_info = forms.CharField(max_length=128)

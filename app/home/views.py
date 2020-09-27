@@ -1,7 +1,9 @@
 import logging
+import requests
 from pprint import pformat
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from .forms import ProfileForm, ApplicantsForm
 from .models import BlueProfile, BlueNews, GuildApplicants
@@ -84,6 +86,9 @@ def apply_view(request):
         logger.debug(pformat(request.POST))  # LOCAL DEBUGGING ONLY
         form = ApplicantsForm(request.POST)
         if form.is_valid():
+            if not google_verify(request):
+                data = {'err_msg': 'Google CAPTCHA not verified.'}
+                return JsonResponse(data, status=400)
             new_app = GuildApplicants(
                 char_name=form.cleaned_data['char_name'],
                 char_role=form.cleaned_data['char_role'],
@@ -95,9 +100,32 @@ def apply_view(request):
                 sat_raid=form.cleaned_data['sat_raid'],
                 raid_exp=form.cleaned_data['raid_exp'],
                 why_blue=form.cleaned_data['why_blue'],
+                contact_info=form.cleaned_data['contact_info'],
             )
             new_app.save()
             request.session['application_submitted'] = True
-            return JsonResponse({'message': 'ok'}, status=200)
+            return JsonResponse({}, status=200)
         else:
             return JsonResponse(form.errors, status=400)
+
+
+def google_verify(request):
+    if 'gverified' in request.session and request.session['gverified']:
+        return True
+    try:
+        url = 'https://www.google.com/recaptcha/api/siteverify'
+        data = {
+            'secret': settings.GOOGLE_SITE_SECRET,
+            'response': request.POST['g-recaptcha-response']
+        }
+        r = requests.post(url, data=data, timeout=6)
+        j = r.json()
+        logger.debug(j)
+        if j['success']:
+            request.session['gverified'] = True
+            return True
+        else:
+            return False
+    except Exception as error:
+        logger.exception(error)
+        return False

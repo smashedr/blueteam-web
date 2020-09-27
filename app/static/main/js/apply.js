@@ -27,12 +27,17 @@ $(document).ready(function() {
             error: function(data, textStatus) {
                 console.log('Status: '+data.status+', Response: '+data.responseText);
                 try {
-                    $($('#apply-form').prop('elements')).each(function () {
-                        if (data.responseJSON.hasOwnProperty(this.name)) {
-                            $('#' + this.name + '-invalid').empty().append(data.responseJSON[this.name]);
-                            $(this).addClass('is-invalid');
-                        }
-                    });
+                    console.log(data.responseJSON);
+                    if (data.responseJSON.hasOwnProperty('err_msg')) {
+                        alert(data.responseJSON['err_msg'])
+                    } else {
+                        $($('#apply-form').prop('elements')).each(function () {
+                            if (data.responseJSON.hasOwnProperty(this.name)) {
+                                $('#' + this.name + '-invalid').empty().append(data.responseJSON[this.name]);
+                                $(this).addClass('is-invalid');
+                            }
+                        });
+                    }
                 }
                 catch(error){
                     console.log(error);

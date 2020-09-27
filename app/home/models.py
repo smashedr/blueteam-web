@@ -57,6 +57,7 @@ class GuildApplicants(models.Model):
     sat_raid = models.BooleanField(default=False)
     raid_exp = models.TextField(blank=True)
     why_blue = models.TextField(blank=True)
+    contact_info = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     app_status = models.CharField(
