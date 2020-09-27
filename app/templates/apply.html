@@ -17,7 +17,12 @@
                     It appears you are already in Blue Team.
                     If you believe this is an error try logging out and back in with a different user.
                 </div>
-            {% elif not request.session.application_submitted %}
+            {% elif request.session.application_submitted %}
+                <div class="alert alert-info" role="alert">
+                    It appears you have already submitted an application.
+                    If you believe this is an error try logging out and back in or clearing your cache for this site.
+                </div>
+            {% else %}
                 <form id="apply-form" name="apply-form" method="POST" action="{% url 'home:apply' %}">
                     {% csrf_token %}
                     <div class="form-row">
@@ -84,7 +89,7 @@
                                 </th>
                                 <td>AQ40</td>
                                 <td>Friday</td>
-                                <td>6:00 PM Server</td>
+                                <td>6:00 PM to 10:00 PM</td>
                             </tr>
                             <tr>
                                 <th scope="row">
@@ -96,7 +101,19 @@
                                 </th>
                                 <td>BWL</td>
                                 <td>Saturday</td>
-                                <td>4:00 PM Server</td>
+                                <td>4:00 PM to 7:00 PM</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="tue_raid" name="tue_raid">
+                                        <label class="form-check-label" for="tue_raid">Can Attend</label>
+                                        <div class="invalid-feedback" id="tue_raid-invalid"></div>
+                                    </div>
+                                </th>
+                                <td>MC</td>
+                                <td>Tuesday</td>
+                                <td>5:00 PM to 7:00 PM</td>
                             </tr>
                             </tbody>
                         </table>
@@ -125,11 +142,6 @@
 
                 <div style="display:none;" id="apply-success" class="alert alert-success" role="alert">
                     Your application has been successfully submitted. Thank you.
-                </div>
-            {% else %}
-                <div class="alert alert-info" role="alert">
-                    It appears you have already submitted an application.
-                    If you believe this is an error try logging out and back in or clearing your cache for this site.
                 </div>
             {% endif %}
 

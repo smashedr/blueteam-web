@@ -26,12 +26,16 @@ $(document).ready(function() {
             error: function(data, textStatus) {
                 console.log('Status: '+data.status+', Response: '+data.responseText);
                 try {
-                    $($('#update-profile-form').prop('elements')).each(function () {
-                        if (data.responseJSON.hasOwnProperty(this.name)) {
-                            $('#' + this.name + '-invalid').empty().append(data.responseJSON[this.name]);
-                            $(this).addClass('is-invalid');
-                        }
-                    });
+                    if (data.responseJSON.hasOwnProperty('err_msg')) {
+                        alert(data.responseJSON['err_msg'])
+                    } else {
+                        $($('#update-profile-form').prop('elements')).each(function () {
+                            if (data.responseJSON.hasOwnProperty(this.name)) {
+                                $('#' + this.name + '-invalid').empty().append(data.responseJSON[this.name]);
+                                $(this).addClass('is-invalid');
+                            }
+                        });
+                    }
                 }
                 catch(error){
                     console.log(error);

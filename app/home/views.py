@@ -50,15 +50,12 @@ def roster_view(request):
 def profile_view(request):
     # View: /profile/
     if not request.method == 'POST':
-        if request.user.is_authenticated:
-            blue_profile = BlueProfile.objects.filter(
-                discord_id=request.user.discord_id
-            ).first()
-            blue_profile = {} if not blue_profile else blue_profile
-            data = {'blue_profile': blue_profile}
-            return render(request, 'profile.html', data)
-        else:
-            return render(request, 'profile.html')
+        blue_profile = BlueProfile.objects.filter(
+            discord_id=request.user.discord_id
+        ).first()
+        blue_profile = {} if not blue_profile else blue_profile
+        data = {'blue_profile': blue_profile}
+        return render(request, 'profile.html', data)
 
     else:
         logger.debug(pformat(request.POST))  # LOCAL DEBUGGING ONLY
@@ -73,7 +70,7 @@ def profile_view(request):
                 show_in_roster=form.cleaned_data['show_in_roster'],
             )
             blue_profile.save()
-            return JsonResponse({'message': 'ok'}, status=200)
+            return JsonResponse({}, status=200)
         else:
             return JsonResponse(form.errors, status=400)
 
@@ -98,6 +95,7 @@ def apply_view(request):
                 native_lang=form.cleaned_data['native_lang'],
                 fri_raid=form.cleaned_data['fri_raid'],
                 sat_raid=form.cleaned_data['sat_raid'],
+                tue_raid=form.cleaned_data['tue_raid'],
                 raid_exp=form.cleaned_data['raid_exp'],
                 why_blue=form.cleaned_data['why_blue'],
                 contact_info=form.cleaned_data['contact_info'],

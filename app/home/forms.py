@@ -24,6 +24,7 @@ class ApplicantsForm(forms.Form):
     native_lang = forms.CharField(max_length=32)
     fri_raid = forms.BooleanField(required=False)
     sat_raid = forms.BooleanField(required=False)
+    tue_raid = forms.BooleanField(required=False)
     raid_exp = forms.CharField()
     why_blue = forms.CharField()
     contact_info = forms.CharField(max_length=128)
