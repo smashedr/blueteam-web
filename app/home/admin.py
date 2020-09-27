@@ -23,8 +23,8 @@ class BlueNewsAdmin(admin.ModelAdmin):
 
 @admin.register(GuildApplicants)
 class GuildApplicantsAdmin(admin.ModelAdmin):
-    list_display = ('char_name', 'char_role', 'fri_raid', 'sat_raid', 'app_status',)
-    list_filter = ('app_status', 'fri_raid', 'sat_raid', 'char_role',)
+    list_display = ('char_name', 'char_role', 'fri_raid', 'sat_raid', 'tue_raid', 'app_status',)
+    list_filter = ('app_status', 'fri_raid', 'sat_raid', 'tue_raid', 'char_role',)
     readonly_fields = ('char_name', 'char_role', 'warcraft_logs', 'speed_test', 'spoken_langs',
                        'native_lang', 'fri_raid', 'sat_raid', 'tue_raid', 'raid_exp', 'why_blue',)
     search_fields = ('char_name',)
