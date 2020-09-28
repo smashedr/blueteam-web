@@ -20,6 +20,9 @@ services:
         target: /etc/nginx/auth.users
     ports:
       - "${DOCKER_PORT}:443"
+    links:
+      - "app"
+      - "flower"
 
   app:
     build: ./app
