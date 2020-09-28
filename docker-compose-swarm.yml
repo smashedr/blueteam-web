@@ -1,16 +1,6 @@
-version: '3.3'
+version: '3.8'
 
 services:
-  app:
-    build: ./app
-    image: harbor01.cssnr.com/shane/blue-team-docker-app:${VERSION}
-    env_file: ${ENV_FILE}
-    command: "gunicorn blueteam.wsgi:application --workers 2 -b 0.0.0.0:9000"
-    deploy:
-      mode: global
-    volumes:
-      - data_dir:/data
-
   nginx:
     build: ./nginx
     image: harbor01.cssnr.com/shane/blue-team-docker-nginx:${VERSION}
@@ -26,13 +16,65 @@ services:
         target: /etc/ssl/cssnr.com.crt
       - source: cssnr.com.key
         target: /etc/ssl/cssnr.com.key
+      - source: blueteam_basic_http_auth
+        target: /etc/nginx/auth.users
     ports:
       - "${DOCKER_PORT}:443"
+    links:
+      - "app"
+      - "flower"
+
+  app:
+    build: ./app
+    image: harbor01.cssnr.com/shane/blue-team-docker-app:${VERSION}
+    env_file: ${ENV_FILE}
+    command: "gunicorn blueteam.wsgi:application -w 2 -b 0.0.0.0:9000"
+    deploy:
+      mode: global
+    volumes:
+      - data_dir:/data
+    depends_on:
+      - redis
+
+  worker:
+    build: ./app
+    image: harbor01.cssnr.com/shane/blue-team-docker-worker:${VERSION}
+    env_file: ${ENV_FILE}
+    command: "celery -A blueteam worker -l INFO -c 2"
+    deploy:
+      replicas: 1
+    depends_on:
+      - app
+      - redis
+
+  beat:
+    build: ./app
+    image: harbor01.cssnr.com/shane/blue-team-docker-beat:${VERSION}
+    env_file: ${ENV_FILE}
+    command: "celery -A blueteam beat -l INFO -s /celerybeat-schedule"
+    deploy:
+      replicas: 1
+    depends_on:
+      - app
+      - redis
+
+  flower:
+    image: mher/flower
+    env_file: ${ENV_FILE}
+    deploy:
+      replicas: 1
+
+  redis:
+    image: redis:5-alpine
+    deploy:
+      replicas: 1
 
 secrets:
   cssnr.com.crt:
     external: true
   cssnr.com.key:
+    external: true
+  blueteam_basic_http_auth:
     external: true
 
 volumes:

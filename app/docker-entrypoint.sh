@@ -2,6 +2,8 @@
 
 set -ex
 
-python manage.py collectstatic --noinput
+if [ "${@:0:3}" = "gun" ];then
+  python manage.py collectstatic --noinput
+fi
 
 exec "$@"

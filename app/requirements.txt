@@ -1,7 +1,9 @@
+celery
 django
 django-debug-toolbar
 django-extensions
 gunicorn
 mysqlclient
+redis
 requests
 Werkzeug

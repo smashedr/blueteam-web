@@ -1,16 +1,6 @@
-version: '3.3'
+version: '3.8'
 
 services:
-  app:
-    build: ./app
-    image: blue-team-docker-app:latest
-    env_file: settings.env
-    command: "gunicorn blueteam.wsgi:application --workers 2 -b 0.0.0.0:9000"
-    deploy:
-      mode: global
-    volumes:
-      - data_dir:/data
-
   nginx:
     build: ./nginx
     image: blue-team-docker-nginx:latest
@@ -26,14 +16,66 @@ services:
         target: /etc/ssl/cssnr.com.crt
       - source: cssnr.com.key
         target: /etc/ssl/cssnr.com.key
+      - source: blueteam_basic_http_auth
+        target: /etc/nginx/auth.users
     ports:
-      - "10296:443"
+      - "443:443"
+    links:
+      - "app"
+      - "flower"
+
+  app:
+    build: ./app
+    image: blue-team-docker-app:latest
+    env_file: settings.env
+    command: "gunicorn blueteam.wsgi:application -w 2 -b 0.0.0.0:9000"
+    deploy:
+      mode: global
+    volumes:
+      - data_dir:/data
+    depends_on:
+      - redis
+
+  worker:
+    build: ./app
+    image: blue-team-docker-worker:latest
+    env_file: settings.env
+    command: "celery -A blueteam worker -l INFO -c 2"
+    deploy:
+      replicas: 1
+    depends_on:
+      - app
+      - redis
+
+  beat:
+    build: ./app
+    image: blue-team-docker-beat:latest
+    env_file: settings.env
+    command: "celery -A blueteam beat -l INFO -s /celerybeat-schedule"
+    deploy:
+      replicas: 1
+    depends_on:
+      - app
+      - redis
+
+  flower:
+    image: mher/flower
+    env_file: settings.env
+    deploy:
+      replicas: 1
+
+  redis:
+    image: redis:5-alpine
+    deploy:
+      replicas: 1
 
 secrets:
   cssnr.com.crt:
     file: /etc/ssl/cssnr.com.crt
   cssnr.com.key:
     file: /etc/ssl/cssnr.com.key
+  blueteam_basic_http_auth:
+    file: ~/basic_http_auth
 
 volumes:
   data_dir:
