@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('home.urls')),
     path('oauth/', include('oauth.urls')),
     path('admin/', admin.site.urls),
+    path('flower/', RedirectView.as_view(url='/flower/'), name='flower'),
     path('discord/', RedirectView.as_view(url=settings.BLUE_DISCORD_URL)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -60,10 +60,12 @@
                 </ul>
 
                 {% if not request.user.is_authenticated %}
+                    {# Not Authenticated #}
                     <a href="{% url 'oauth:login' %}?next={{ request.path }}" class="btn btn-outline-info" role="button">
                         Log in with Discord
                         <i class="fas fa-sign-in-alt"></i></a>
                 {% else %}
+                    {# Logged In #}
                     {% if user.blue_team_member %}
                         <a href="{% url 'home:profile' %}" class="text-info mr-3">
                             {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</a>
@@ -71,14 +73,16 @@
                         <a href="https://discord.com/login" class="text-info mr-3" target="_blank">
                             {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</a>
                     {% endif %}
+                    {% if user.is_superuser %}
+                        <a href="{% url 'flower' %}" class="btn btn-outline-success mr-1" role="button" target="_blank">
+                            Flower <i class="fas fa-fan"></i></a>
+                    {% endif %}
                     {% if user.is_staff %}
                         <a href="{% url 'admin:index' %}" class="btn btn-outline-primary mr-1" role="button">
-                            Admin
-                            <i class="fas fa-rocket"></i></a>
+                            Admin <i class="fas fa-rocket"></i></a>
                     {% endif %}
                     <a href="" class="log-out btn btn-outline-info" role="button">
-                        Log Out
-                        <i class="fas fa-sign-out-alt"></i></a>
+                        Log Out <i class="fas fa-sign-out-alt"></i></a>
                 {% endif %}
             </div>
         </nav>
@@ -106,3 +110,4 @@
 
 </body>
 </html>
+
