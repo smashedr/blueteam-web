@@ -1,16 +1,6 @@
 version: '3.3'
 
 services:
-  app:
-    build: ./app
-    image: harbor01.cssnr.com/shane/blue-team-docker-app:${VERSION}
-    env_file: ${ENV_FILE}
-    command: "gunicorn blueteam.wsgi:application --workers 2 -b 0.0.0.0:9000"
-    deploy:
-      mode: global
-    volumes:
-      - data_dir:/data
-
   nginx:
     build: ./nginx
     image: harbor01.cssnr.com/shane/blue-team-docker-nginx:${VERSION}
@@ -28,6 +18,43 @@ services:
         target: /etc/ssl/cssnr.com.key
     ports:
       - "${DOCKER_PORT}:443"
+
+  app:
+    build: ./app
+    image: harbor01.cssnr.com/shane/blue-team-docker-app:${VERSION}
+    env_file: ${ENV_FILE}
+    command: "gunicorn blueteam.wsgi:application --w 2 -b 0.0.0.0:9000"
+    deploy:
+      mode: global
+    volumes:
+      - data_dir:/data
+    depends_on:
+      - redis
+
+  worker:
+    build: ./app
+    image: harbor01.cssnr.com/shane/blue-team-docker-worker:${VERSION}
+    env_file: ${ENV_FILE}
+    command: "celery -A blueteam worker -l INFO -c 2"
+    deploy:
+      mode: global
+    depends_on:
+      - app
+      - redis
+
+  beat:
+    build: ./app
+    image: harbor01.cssnr.com/shane/blue-team-docker-beat:${VERSION}
+    env_file: ${ENV_FILE}
+    command: "celery -A blueteam beat -l INFO -s /celerybeat-schedule"
+    deploy:
+      mode: global
+    depends_on:
+      - app
+      - redis
+
+  redis:
+    image: redis:5-alpine
 
 secrets:
   cssnr.com.crt:

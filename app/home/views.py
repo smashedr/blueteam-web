@@ -7,6 +7,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from .forms import ProfileForm, ApplicantsForm
 from .models import BlueProfile, BlueNews, GuildApplicants
+from .tasks import test_task_one
 
 logger = logging.getLogger('app')
 
@@ -21,6 +22,8 @@ def is_blue_officer(user):
 
 def home_view(request):
     # View: /
+    test_task_one.delay('WINNING')
+
     if request.user.is_authenticated:
         blue_profile = BlueProfile.objects.filter(
             discord_id=request.user.discord_id
