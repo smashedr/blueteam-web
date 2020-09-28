@@ -55,6 +55,12 @@
                         >{% if blue_profile.user_description %}{{ blue_profile.user_description }}{% endif %}</textarea>
                 </div>
                 <div class="form-group">
+                    <label for="twitch_username">Twitch Username (to show when live)</label>
+                    <input type="text" class="form-control" id="twitch_username" name="twitch_username" placeholder="Twitch Username"
+                           {% if blue_profile.twitch_username %}value="{{ blue_profile.twitch_username }}"{% endif %}>
+                    <div class="invalid-feedback" id="twitch_username-invalid"></div>
+                </div>
+                <div class="form-group">
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" id="show_in_roster" name="show_in_roster"
                             {% if blue_profile %}{% if blue_profile.show_in_roster %}checked{% endif %}{% else %}checked{% endif %}>

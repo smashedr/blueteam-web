@@ -7,7 +7,6 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from .forms import ProfileForm, ApplicantsForm
 from .models import BlueProfile, BlueNews, GuildApplicants
-from .tasks import test_task_one
 
 logger = logging.getLogger('app')
 
@@ -22,16 +21,26 @@ def is_blue_officer(user):
 
 def home_view(request):
     # View: /
-
     if request.user.is_authenticated:
         blue_profile = BlueProfile.objects.filter(
             discord_id=request.user.discord_id
         ).first()
     else:
-        blue_profile = {}
+        blue_profile = None
+
+    live_users = BlueProfile.objects.get_live()
+    if live_users:
+        live_user = live_users[0]
+    else:
+        live_user = None
 
     blue_news = BlueNews.objects.all().order_by('-pk')[:2]
-    data = {'blue_profile': blue_profile, 'blue_news': blue_news}
+
+    data = {
+        'blue_profile': blue_profile,
+        'blue_news': blue_news,
+        'live_user': live_user,
+    }
     return render(request, 'home.html', data)
 
 
@@ -43,7 +52,7 @@ def news_view(request):
 
 def roster_view(request):
     # View: /roster/
-    guild_roster = BlueProfile.objects.all().order_by('-pk')
+    guild_roster = BlueProfile.objects.all().order_by('pk')
     return render(request, 'roster.html', {'guild_roster': guild_roster})
 
 
@@ -52,8 +61,6 @@ def roster_view(request):
 def profile_view(request):
     # View: /profile/
     if not request.method == 'POST':
-        test_task_one.delay('WINNING')  # CELERY TESTING ONLY
-
         blue_profile = BlueProfile.objects.filter(
             discord_id=request.user.discord_id
         ).first()
@@ -62,21 +69,25 @@ def profile_view(request):
         return render(request, 'profile.html', data)
 
     else:
-        logger.debug(pformat(request.POST))  # LOCAL DEBUGGING ONLY
-        form = ProfileForm(request.POST)
-        if form.is_valid():
-            blue_profile = BlueProfile(
-                discord_id=request.user.discord_id,
-                main_char=form.cleaned_data['main_char'],
-                main_class=form.cleaned_data['main_class'],
-                main_role=form.cleaned_data['main_role'],
-                user_description=form.cleaned_data['user_description'],
-                show_in_roster=form.cleaned_data['show_in_roster'],
-            )
-            blue_profile.save()
-            return JsonResponse({}, status=200)
-        else:
-            return JsonResponse(form.errors, status=400)
+        try:
+            logger.debug(pformat(request.POST))  # LOCAL DEBUGGING ONLY
+            form = ProfileForm(request.POST)
+            if form.is_valid():
+                blue_profile, created = BlueProfile.objects.get_or_create(
+                    discord_id=request.user.discord_id)
+                blue_profile.main_char = form.cleaned_data['main_char']
+                blue_profile.main_class = form.cleaned_data['main_class']
+                blue_profile.main_role = form.cleaned_data['main_role']
+                blue_profile.user_description = form.cleaned_data['user_description']
+                blue_profile.twitch_username = form.cleaned_data['twitch_username']
+                blue_profile.show_in_roster = bool(form.cleaned_data['show_in_roster'])
+                blue_profile.save()
+                return JsonResponse({}, status=200)
+            else:
+                return JsonResponse(form.errors, status=400)
+        except Exception as error:
+            logger.warning(error)
+            return JsonResponse({'err_msg': str(error)}, status=400)
 
 
 def apply_view(request):

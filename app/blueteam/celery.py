@@ -9,9 +9,9 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 app.conf.beat_schedule = {
-    'add-every-60-seconds': {
-        'task': 'test_task_two',
-        'schedule': crontab('*/1')
+    'every-five-minutes': {
+        'task': 'check_twitch_live',
+        'schedule': crontab('*/5')
     },
 }
 
