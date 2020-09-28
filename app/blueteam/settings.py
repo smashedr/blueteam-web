@@ -1,5 +1,4 @@
 import os
-from celery.schedules import crontab
 from distutils.util import strtobool
 
 ROOT_URLCONF = 'blueteam.urls'
@@ -44,18 +43,10 @@ BLUE_DISCORD_URL = os.getenv('BLUE_DISCORD_URL')
 GOOGLE_SITE_PUBLIC = os.getenv('GOOGLE_SITE_PUBLIC')
 GOOGLE_SITE_SECRET = os.getenv('GOOGLE_SITE_SECRET')
 
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TASK_SERIALIZER = 'json'
 CELERY_TIMEZONE = os.getenv('TZ', 'America/Los_Angeles')
-CELERY_BEAT_SCHEDULE = {
-    'every-minute': {
-        'task': 'test_task_two',
-        'schedule': crontab('*/1'),
-    },
-}
 
 USE_I18N = True
 USE_L10N = True

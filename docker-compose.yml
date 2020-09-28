@@ -53,8 +53,16 @@ services:
       - app
       - redis
 
+  flower:
+    image: mher/flower
+    env_file: settings.env
+    deploy:
+      mode: global
+
   redis:
     image: redis:5-alpine
+    deploy:
+      mode: global
 
 secrets:
   cssnr.com.crt:
