@@ -22,8 +22,8 @@
                 <a class="text-info" href="{% url 'admin:index' %}">Admin Panel</a>.</p>
         {% endif %}
 
-        <p><a class="text-info" href="{% get_config "BLUE_DISCORD_URL" %}">Join our Discord
-            <i class="fab fa-discord"></i></a> for more information...</p>
+        <p><a class="text-info" href="{% get_config "BLUE_DISCORD_URL" %}">
+            Join our <i class="fab fa-discord"></i> Discord</a> for more information...</p>
 
         {% include 'home/player.html' %}
     </div>

@@ -1,11 +1,15 @@
 <div class="card">
-    <h5 class="card-header">{{ member.main_char|title }}</h5>
+    <h5 class="card-header" id="{{ member.main_char }}">{{ member.main_char|title }}</h5>
     <div class="card-body">
         <p class="card-text">{{ member.user_description|linebreaksbr }}</p>
         <a href="https://classic.warcraftlogs.com/character/us/faerlina/{{ member.main_char|lower }}"
            class="btn btn-info" target="_blank">Warcraft Logs</a>
         <a href="https://ironforge.pro/?player={{ member.main_char|title }}-Faerlina"
            class="btn btn-info" target="_blank">IronForge Armory</a>
+        {% if member.twitch_username %}
+            <a href="https://www.twitch.tv/{{ member.twitch_username|lower }}"
+               class="btn btn-success" target="_blank">Twitch</a>
+        {% endif %}
     </div>
     <div class="card-footer text-muted">{{ member.main_class }} - {{ member.main_role }}</div>
 </div>

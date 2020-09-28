@@ -1,6 +1,6 @@
 {% if live_user %}
     <script src= "https://player.twitch.tv/js/embed/v1.js"></script>
-    <h5>Live on Twitch - {{ live_user.twitch_username }}</h5>
+    <h5>Live on Twitch - {{ live_user.main_char|title }}</h5>
     <div id="twitch_stream"></div>
     <script type="text/javascript">
         var options = {
