@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.8'
 
 services:
   nginx:
@@ -16,6 +16,8 @@ services:
         target: /etc/ssl/cssnr.com.crt
       - source: cssnr.com.key
         target: /etc/ssl/cssnr.com.key
+      - source: blueteam_basic_http_auth
+        target: /etc/nginx/auth.users
     ports:
       - "10296:443"
 
@@ -69,6 +71,8 @@ secrets:
     file: /etc/ssl/cssnr.com.crt
   cssnr.com.key:
     file: /etc/ssl/cssnr.com.key
+  blueteam_basic_http_auth:
+    file: ~/basic_http_auth
 
 volumes:
   data_dir:

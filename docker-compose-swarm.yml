@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.8'
 
 services:
   nginx:
@@ -16,6 +16,8 @@ services:
         target: /etc/ssl/cssnr.com.crt
       - source: cssnr.com.key
         target: /etc/ssl/cssnr.com.key
+      - source: blueteam_basic_http_auth
+        target: /etc/nginx/auth.users
     ports:
       - "${DOCKER_PORT}:443"
 
@@ -68,6 +70,8 @@ secrets:
   cssnr.com.crt:
     external: true
   cssnr.com.key:
+    external: true
+  blueteam_basic_http_auth:
     external: true
 
 volumes:
