@@ -25,7 +25,7 @@ services:
     build: ./app
     image: harbor01.cssnr.com/shane/blue-team-docker-app:${VERSION}
     env_file: ${ENV_FILE}
-    command: "gunicorn blueteam.wsgi:application --w 2 -b 0.0.0.0:9000"
+    command: "gunicorn blueteam.wsgi:application -w 2 -b 0.0.0.0:9000"
     deploy:
       mode: global
     volumes:
