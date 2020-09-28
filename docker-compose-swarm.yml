@@ -42,7 +42,7 @@ services:
     env_file: ${ENV_FILE}
     command: "celery -A blueteam worker -l INFO -c 2"
     deploy:
-      mode: global
+      replicas: 1
     depends_on:
       - app
       - redis
@@ -53,7 +53,7 @@ services:
     env_file: ${ENV_FILE}
     command: "celery -A blueteam beat -l INFO -s /celerybeat-schedule"
     deploy:
-      mode: global
+      replicas: 1
     depends_on:
       - app
       - redis
@@ -62,12 +62,12 @@ services:
     image: mher/flower
     env_file: ${ENV_FILE}
     deploy:
-      mode: global
+      replicas: 1
 
   redis:
     image: redis:5-alpine
     deploy:
-      mode: global
+      replicas: 1
 
 secrets:
   cssnr.com.crt:
