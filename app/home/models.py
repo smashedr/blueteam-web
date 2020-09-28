@@ -9,6 +9,8 @@ class BlueProfile(models.Model):
     main_role = models.CharField(max_length=32, verbose_name='Main Role')
     user_description = models.TextField(blank=True, verbose_name='User Description')
     show_in_roster = models.BooleanField(default=True, verbose_name='Show in Roster')
+    twitch_username = models.CharField(blank=True, max_length=32, verbose_name='Twitch Username')
+    live_on_twitch = models.BooleanField(default=False, verbose_name='Twitch Live Status')
     updated_at = models.DateTimeField(auto_now=True)
     objects = BlueProfileManager()
 
@@ -75,3 +77,11 @@ class GuildApplicants(models.Model):
     class Meta:
         verbose_name = 'Guild Applicants'
         verbose_name_plural = 'Guild Applicants'
+
+
+class TwitchToken(models.Model):
+    access_token = models.CharField(blank=True, max_length=32)
+    expiration_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.access_token

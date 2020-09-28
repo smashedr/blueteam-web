@@ -1,0 +1,14 @@
+{% if live_user %}
+    <script src= "https://player.twitch.tv/js/embed/v1.js"></script>
+    <h5>Live on Twitch - {{ live_user.twitch_username }}</h5>
+    <div id="twitch_stream"></div>
+    <script type="text/javascript">
+        var options = {
+            width: "100%",
+            height: "300",
+            channel: "{{ live_user.twitch_username|lower }}"
+        };
+        var player = new Twitch.Player("twitch_stream", options);
+        player.setVolume(0.5);
+    </script>
+{% endif %}

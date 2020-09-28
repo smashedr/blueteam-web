@@ -7,7 +7,6 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from .forms import ProfileForm, ApplicantsForm
 from .models import BlueProfile, BlueNews, GuildApplicants
-from .tasks import test_task_one
 
 logger = logging.getLogger('app')
 
@@ -22,16 +21,26 @@ def is_blue_officer(user):
 
 def home_view(request):
     # View: /
-
     if request.user.is_authenticated:
         blue_profile = BlueProfile.objects.filter(
             discord_id=request.user.discord_id
         ).first()
     else:
-        blue_profile = {}
+        blue_profile = None
+
+    live_users = BlueProfile.objects.get_live()
+    if live_users:
+        live_user = live_users[0]
+    else:
+        live_user = None
 
     blue_news = BlueNews.objects.all().order_by('-pk')[:2]
-    data = {'blue_profile': blue_profile, 'blue_news': blue_news}
+
+    data = {
+        'blue_profile': blue_profile,
+        'blue_news': blue_news,
+        'live_user': live_user,
+    }
     return render(request, 'home.html', data)
 
 
@@ -52,8 +61,6 @@ def roster_view(request):
 def profile_view(request):
     # View: /profile/
     if not request.method == 'POST':
-        test_task_one.delay('WINNING')  # CELERY TESTING ONLY
-
         blue_profile = BlueProfile.objects.filter(
             discord_id=request.user.discord_id
         ).first()
@@ -71,6 +78,7 @@ def profile_view(request):
                 main_class=form.cleaned_data['main_class'],
                 main_role=form.cleaned_data['main_role'],
                 user_description=form.cleaned_data['user_description'],
+                twitch_username=form.cleaned_data['twitch_username'],
                 show_in_roster=form.cleaned_data['show_in_roster'],
             )
             blue_profile.save()

@@ -18,15 +18,12 @@
 
         <p><a class="text-info" href="{% get_config "BLUE_DISCORD_URL" %}">Join our Discord
             <i class="fab fa-discord"></i></a> for more information...</p>
+
+        {% include 'home/player.html' %}
     </div>
 
     <div class="col-md-4">
-        <h2><a class="text-info" href="{% url 'home:news' %}">Blue News</a></h2>
-        {% for news in blue_news %}
-            {% include 'include/news.html' with news=news %}
-            <br>
-        {% endfor %}
-        <p><a class="text-info" href="{% url 'home:news' %}">Read more news...</a></p>
+        {% include 'home/news.html' %}
     </div>
 
 </div>
