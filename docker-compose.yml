@@ -37,8 +37,7 @@ services:
       - redis
 
   worker:
-    build: ./app
-    image: blue-team-docker-worker:latest
+    image: blue-team-docker-app:latest
     env_file: settings.env
     command: "celery -A blueteam worker -l INFO -c 2"
     deploy:
@@ -48,8 +47,7 @@ services:
       - redis
 
   beat:
-    build: ./app
-    image: blue-team-docker-beat:latest
+    image: blue-team-docker-app:latest
     env_file: settings.env
     command: "celery -A blueteam beat -l INFO -s /celerybeat-schedule"
     deploy:
