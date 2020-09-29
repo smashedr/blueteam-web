@@ -14,14 +14,14 @@
 
         <p>Blue Team is a Classic World of Warcraft Alliance raiding guild on US-Faerlina.</p>
 
-        <p>Website development is still in progress. Currently you can read recent
-            <a class="text-info" href="{% url 'home:news' %}">news</a>, view our
-            <a class="text-info" href="{% url 'home:roster' %}">roster</a>, and submit a
+        <p>Website development is still in progress. Currently you can read
+            <a class="text-info" href="{% url 'home:news' %}">recent news</a>, view our
+            <a class="text-info" href="{% url 'home:roster' %}">guild roster</a>, and submit a
             <a class="text-info" href="{% url 'home:apply' %}">guild application</a>.
-            Eventually we will be posting our progress, adding additional resources, and more...</p>
+            Soon we will be posting our progress, adding additional resources, and more...</p>
 
-        <p><a class="text-info" href="{% get_config "BLUE_DISCORD_URL" %}">
-            Join our <i class="fab fa-discord"></i> Discord</a> for more information...</p>
+        <p>For more information <a class="text-info" href="{% get_config "BLUE_DISCORD_URL" %}">
+            Join our <i class="fab fa-discord"></i> Discord</a>.</p>
 
         {% include 'home/player.html' %}
     </div>
