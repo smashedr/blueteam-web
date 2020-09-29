@@ -11,7 +11,7 @@
 
             <h1>Guild Roster</h1>
 
-            <p>Jump to: {% for user in guild_roster %}<a href="#{{ user.main_char }}">
+            <p>Jump to: {% for user in guild_roster reversed %}<a href="#{{ user.main_char }}">
                 {{ user.main_char }}</a>{% if not forloop.last %} | {% endif %}{% endfor %}</p>
 
             {% for member in guild_roster %}
