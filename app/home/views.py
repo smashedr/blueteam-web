@@ -52,7 +52,7 @@ def news_view(request):
 
 def roster_view(request):
     # View: /roster/
-    guild_roster = BlueProfile.objects.all().order_by('pk')
+    guild_roster = BlueProfile.objects.all().order_by('created_at')
     return render(request, 'roster.html', {'guild_roster': guild_roster})
 
 
