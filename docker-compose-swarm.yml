@@ -37,8 +37,7 @@ services:
       - redis
 
   worker:
-    build: ./app
-    image: harbor01.cssnr.com/shane/blue-team-docker-worker:${VERSION}
+    image: harbor01.cssnr.com/shane/blue-team-docker-app:${VERSION}
     env_file: ${ENV_FILE}
     command: "celery -A blueteam worker -l INFO -c 2"
     deploy:
@@ -48,8 +47,7 @@ services:
       - redis
 
   beat:
-    build: ./app
-    image: harbor01.cssnr.com/shane/blue-team-docker-beat:${VERSION}
+    image: harbor01.cssnr.com/shane/blue-team-docker-app:${VERSION}
     env_file: ${ENV_FILE}
     command: "celery -A blueteam beat -l INFO -s /celerybeat-schedule"
     deploy:
