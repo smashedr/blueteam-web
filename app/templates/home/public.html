@@ -7,14 +7,18 @@
 
         {% if user.is_authenticated %}
             <p class="lead">Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}
-                and welcome to Blue Team. Our website is coming soon...</p>
+                and welcome to Blue Team.</p>
         {% else %}
-            <p class="lead">Hello and welcome to Blue Team. Our website is coming soon...</p>
+            <p class="lead">Hello and welcome to Blue Team.</p>
         {% endif %}
 
-        <p>Eventually we will post <a class="text-info" href="{% url 'home:news' %}">news</a>,
-            progress, <a class="text-info" href="{% url 'home:roster' %}">roster</a>, a
-            <a class="text-info" href="{% url 'home:apply' %}">guild application</a> and more...</p>
+        <p>Blue Team is a Classic World of Warcraft Alliance raiding guild on US-Faerlina.</p>
+
+        <p>Website development is still in progress. Currently you can read recent
+            <a class="text-info" href="{% url 'home:news' %}">news</a>, view our
+            <a class="text-info" href="{% url 'home:roster' %}">roster</a>, and submit a
+            <a class="text-info" href="{% url 'home:apply' %}">guild application</a>.
+            Eventually we will be posting our progress, adding additional resources, and more...</p>
 
         <p><a class="text-info" href="{% get_config "BLUE_DISCORD_URL" %}">
             Join our <i class="fab fa-discord"></i> Discord</a> for more information...</p>
