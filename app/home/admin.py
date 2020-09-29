@@ -18,7 +18,7 @@ class BlueNewsAdmin(admin.ModelAdmin):
     list_display = ('title', 'display_name', 'published', 'created_at')
     list_filter = ('published',)
     search_fields = ('title',)
-    ordering = ('created_at',)
+    ordering = ('-created_at',)
 
 
 @admin.register(GuildApplicants)
