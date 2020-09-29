@@ -35,12 +35,8 @@ def callback(request):
     """
     try:
         oauth_code = request.GET['code']
-        logger.debug('oauth_code: {}'.format(oauth_code))
         access_token = get_access_token(oauth_code)
-        logger.debug('access_token: {}'.format(access_token))
         user_profile = get_user_profile(access_token)
-        logger.debug('user_profile: {}'.format(user_profile))
-        logger.debug(user_profile)
         auth = login_user(request, user_profile)
         if not auth:
             err_msg = 'Unable to complete login process. Report as a Bug.'
@@ -79,14 +75,12 @@ def login_user(request, user_profile):
     Login or Create New User
     """
     try:
-        logger.debug('try django_username: %s', user_profile['django_username'])
         user = CustomUser.objects.get(username=user_profile['django_username'])
         user = update_profile(user, user_profile)
         user.save()
         login(request, user)
         return True
     except ObjectDoesNotExist:
-        logger.debug('except django_username: %s', user_profile['django_username'])
         user = CustomUser.objects.create_user(user_profile['django_username'])
         user = update_profile(user, user_profile)
         user.save()
@@ -111,8 +105,8 @@ def get_access_token(code):
     }
     headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     r = requests.post(url, data=data, headers=headers, timeout=10)
-    logger.debug('status_code: {}'.format(r.status_code))
-    logger.debug('content: {}'.format(r.content))
+    logger.debug('status_code: %s', r.status_code)
+    logger.debug('content: %s', r.content)
     return r.json()['access_token']
 
 
@@ -125,8 +119,8 @@ def get_user_profile(access_token):
         'Authorization': 'Bearer {}'.format(access_token),
     }
     r = requests.get(url, headers=headers, timeout=10)
-    logger.debug('status_code: {}'.format(r.status_code))
-    logger.debug('content: {}'.format(r.content))
+    logger.debug('status_code: %s', r.status_code)
+    logger.debug('content: %s', r.content)
     user_profile = r.json()
 
     url = '{}/guilds/{}/members/{}'.format(
@@ -138,8 +132,8 @@ def get_user_profile(access_token):
         'Authorization': 'Bot {}'.format(settings.BLUE_DISCORD_BOT_TOKEN),
     }
     r = requests.get(url, headers=headers, timeout=10)
-    logger.debug('status_code: {}'.format(r.status_code))
-    logger.debug('content: {}'.format(r.content))
+    logger.debug('status_code: %s', r.status_code)
+    logger.debug('content: %s', r.content)
     user_guild = r.json()
 
     return {
