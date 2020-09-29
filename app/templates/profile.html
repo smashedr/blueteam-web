@@ -14,6 +14,9 @@
 
             <p class="lead">Hello {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}.</p>
 
+            <p>Important: Make sure you put your correct Main Character. This is used to link to your Logs and Armory.
+                Also, if adding your Twitch username, make sure this is correct; it is used to show you on the home page when live.</p>
+
             <form id="update-profile-form" name="update-profile-form" method="POST" action="{% url 'home:profile' %}">
                 {% csrf_token %}
                 <div class="form-row">
