@@ -17,12 +17,20 @@
                     It appears you are already in Blue Team.
                     If you believe this is an error try logging out and back in with a different user.
                 </div>
+
             {% elif request.session.application_submitted %}
                 <div class="alert alert-info" role="alert">
                     It appears you have already submitted an application.
                     If you believe this is an error try logging out and back in or clearing your cache for this site.
                 </div>
+
             {% else %}
+                <h3>US - Faerlina - Alliance</h3>
+                <p>Blue Team is a Classic World of Warcraft raiding guild on the US Faerlina realm.
+                    Only Alliance players from Faerlina or transferring to Faerlina should apply.
+                    For more information please join our
+                    <a href="{% get_config 'BLUE_DISCORD_URL' %}" class="text-info">discord server</a>.</p>
+
                 <form id="apply-form" name="apply-form" method="POST" action="{% url 'home:apply' %}">
                     {% csrf_token %}
                     <div class="form-row">

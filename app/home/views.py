@@ -1,12 +1,12 @@
 import logging
 import requests
-from pprint import pformat
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
 from django.shortcuts import render
 from .forms import ProfileForm, ApplicantsForm
 from .models import BlueProfile, BlueNews, GuildApplicants
+from .tasks import notify_guild_app
 
 logger = logging.getLogger('app')
 
@@ -52,7 +52,7 @@ def news_view(request):
 
 def roster_view(request):
     # View: /roster/
-    guild_roster = BlueProfile.objects.all().order_by('pk')
+    guild_roster = BlueProfile.objects.all().order_by('created_at')
     return render(request, 'roster.html', {'guild_roster': guild_roster})
 
 
@@ -70,7 +70,7 @@ def profile_view(request):
 
     else:
         try:
-            logger.debug(pformat(request.POST))  # LOCAL DEBUGGING ONLY
+            logger.debug(request.POST)
             form = ProfileForm(request.POST)
             if form.is_valid():
                 blue_profile, created = BlueProfile.objects.get_or_create(
@@ -95,7 +95,7 @@ def apply_view(request):
     if not request.method == 'POST':
         return render(request, 'apply.html')
     else:
-        logger.debug(pformat(request.POST))  # LOCAL DEBUGGING ONLY
+        logger.debug(request.POST)
         form = ApplicantsForm(request.POST)
         if form.is_valid():
             if not google_verify(request):
@@ -117,6 +117,8 @@ def apply_view(request):
             )
             new_app.save()
             request.session['application_submitted'] = True
+            logger.debug('new_app.id: %s', new_app.id)
+            notify_guild_app.delay(new_app.id)
             return JsonResponse({}, status=200)
         else:
             return JsonResponse(form.errors, status=400)
