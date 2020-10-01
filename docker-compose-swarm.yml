@@ -56,16 +56,20 @@ services:
       - app
       - redis
 
+  redis:
+    image: redis:6-alpine
+    deploy:
+      replicas: 1
+    volumes:
+      - redis_data:/data
+
   flower:
     image: mher/flower
     env_file: ${ENV_FILE}
     deploy:
       replicas: 1
-
-  redis:
-    image: redis:5-alpine
-    deploy:
-      replicas: 1
+    volumes:
+      - flower_data:/data
 
 secrets:
   cssnr.com.crt:
@@ -77,3 +81,5 @@ secrets:
 
 volumes:
   data_dir:
+  redis_data:
+  flower_data:
